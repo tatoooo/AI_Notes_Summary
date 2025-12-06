@@ -2,4 +2,6 @@
 .venv
 backend/services/__pycache__
 backend/__pycache__
+frontend/.vscode
+frontend/.vite/deps
 
