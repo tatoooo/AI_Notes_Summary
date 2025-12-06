@@ -1,103 +1,19 @@
 <script setup>
-import { ref, computed } from 'vue'
-import axios from 'axios'
-import FileUploader from './components/FileUploader.vue'
-import FileList from './components/FileList.vue'
-import SummaryResult from './components/SummaryResult.vue'
-
-const files = ref([])
-const isProcessing = ref(false)
-const result = ref(null)
-
-const handleFilesSelected = (newFiles) => {
-  files.value = [...files.value, ...newFiles]
-  // Hide previous result if adding new files
-  if (result.value) {
-    result.value = null
-  }
-}
-
-const handleRemoveFile = (index) => {
-  files.value.splice(index, 1)
-}
-
-const handleReset = () => {
-  files.value = []
-  result.value = null
-}
-
-const handleSubmit = async () => {
-  if (files.value.length === 0) return
-
-  isProcessing.value = true
-  result.value = null
-
-  const formData = new FormData()
-  files.value.forEach(file => {
-    formData.append('files', file)
-  })
-
-  try {
-    const response = await axios.post('/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
-    
-    if (response.data.error) {
-      throw new Error(response.data.message)
-    }
-
-    result.value = response.data
-  } catch (error) {
-    console.error('Error:', error)
-    alert(`上傳發生錯誤: ${error.message || '未知錯誤'}`)
-  } finally {
-    isProcessing.value = false
-  }
-}
-
-const buttonText = computed(() => {
-  if (isProcessing.value) return '處理中...'
-  return '上傳並分析'
-})
+// App.vue is now a pure container component
+// All business logic has been moved to views/
 </script>
 
 <template>
-  <div class="wrapper">
-    <div class="card">
-      <h1>AI 筆記摘要助手</h1>
-      <p class="subtitle">
-        上傳 PDF 或 PPT 投影片，AI 將自動為您生成重點摘要並同步至 Notion。
-      </p>
+  <div class="app-container">
+    <header class="app-header">
+      <div class="header-content">
+        <div class="brand">會議記錄摘要小幫手</div>
+      </div>
+    </header>
 
-      <form @submit.prevent="handleSubmit">
-        <FileUploader @files-selected="handleFilesSelected" />
-
-        <FileList :files="files" @remove-file="handleRemoveFile" />
-
-        <div class="button-group">
-          <button 
-            type="button" 
-            v-if="files.length > 0" 
-            class="secondary-btn" 
-            @click="handleReset"
-            :disabled="isProcessing"
-          >
-            重新選擇
-          </button>
-          
-          <button 
-            type="submit" 
-            :disabled="files.length === 0 || isProcessing"
-          >
-            {{ buttonText }}
-          </button>
-        </div>
-      </form>
-
-      <SummaryResult v-if="result" :result="result" />
-    </div>
+    <main class="main-container">
+      <RouterView />
+    </main>
   </div>
 </template>
 
@@ -110,46 +26,75 @@ const buttonText = computed(() => {
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: #f3f4f6;
+    background: #ffffff; /* Changed to white */
+    color: #111827;
 }
 
-.wrapper {
+.app-container {
     min-height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
+    flex-direction: column;
 }
 
-.card {
+/* Header Styles */
+.app-header {
+    border-bottom: 1px solid #f3f4f6;
+    padding: 20px 0;
     background: #ffffff;
-    padding: 32px 40px;
-    border-radius: 18px;
-    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
-    max-width: 800px;
-    width: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
-h1 {
-    margin: 0 0 4px;
-    font-size: 28px;
-}
-
-.subtitle {
-    margin: 0 0 24px;
-    font-size: 14px;
-    color: #6b7280;
-}
-
-.button-group {
+.header-content {
+    max-width: 900px; /* Aligned with main content */
+    margin: 0 auto;
+    padding: 0 24px;
     display: flex;
-    gap: 12px;
-    margin-top: 16px;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-weight: 700;
+    font-size: 18px;
+    color: #4f46e5;
+    letter-spacing: -0.01em;
+}
+
+.info-btn {
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    width: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: none;
+    font-weight: 500;
+}
+
+.info-btn:hover {
+    background: #f9fafb;
+    color: #374151;
+}
+
+/* Main Content */
+.main-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 60px 24px;
+    width: 100%;
+    flex: 1;
 }
 
 button {
     width: 100%;
-    padding: 14px 24px;
+    padding: 16px 24px;
     border-radius: 12px;
     border: none;
     font-size: 16px;
@@ -157,29 +102,35 @@ button {
     background: #4f46e5;
     color: #ffffff;
     font-weight: 600;
-    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-    transition: background 0.2s;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+    transition: all 0.2s;
     display: block;
     flex: 1;
 }
 
 button:hover {
     background: #4338ca;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(79, 70, 229, 0.35);
 }
 
 button:disabled {
-    background: #a5b4fc;
+    background: #cbd5e1;
     cursor: not-allowed;
     box-shadow: none;
+    transform: none;
 }
 
 .secondary-btn {
-    background: #e5e7eb;
+    background: #ffffff;
     color: #374151;
-    box-shadow: none;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid #e5e7eb;
 }
 
 .secondary-btn:hover {
-    background: #d1d5db;
+    background: #f9fafb;
+    border-color: #d1d5db;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 </style>

@@ -40,8 +40,8 @@ const handleDrop = (event) => {
       @change="handleFileChange"
     >
     <div class="icon">📁</div>
-    <p>點擊選擇檔案，或拖放至此</p>
-    <div class="hint">支援 PDF, PPT, MP3, WAV, M4A</div>
+    <p>拖放檔案或點擊上傳</p>
+    <div class="hint">支援格式：.pdf .ppt .pptx .mp3 .wav .m4a .ogg</div>
   </div>
 </template>
 
