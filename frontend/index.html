@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 筆記摘要助手</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <div class="card">
+            <h1>AI 筆記摘要助手</h1>
+            <p class="subtitle">
+                上傳 PDF 或 PPT 投影片，AI 將自動為您生成重點摘要並同步至 Notion。
+            </p>
+
+            <form id="upload-form">
+                <div class="upload-box">
+                    <p>拖曳或點擊選擇文件</p>
+                    <input type="file" name="file" accept=".pdf,.ppt,.pptx" required>
+                    <br>
+                    <button type="submit" id="submit-btn">上傳並分析</button>
+                    <div class="hint">支援格式：PDF, PPT, PPTX</div>
+                </div>
+            </form>
+
+            <div id="result-box" class="result-box">
+                <h2 id="result-filename" class="section-title">分析結果：...</h2>
+
+                <span id="result-status" class="status-tag">Status</span>
+
+                <h3 class="section-title" style="margin-top: 16px;">摘要內容 (Markdown)</h3>
+                <pre id="result-summary"></pre>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html>
